@@ -6,7 +6,7 @@ This is a repository for lua scripts running on szieke's embLua ported to STM32H
 
 The hardware is a STM32H723 board with a ST-Link V2 and a USB RS-232 board. They are all available in Aliexpress at very low cost.
 
-![{Connection}](image/connect.png)
+![](image/connection.png)
 
 # The script files
 
