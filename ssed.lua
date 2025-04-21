@@ -6,6 +6,7 @@ local need_quit = false
 local need_screen_update = false
 local need_line_update = false
 local key_msg = ""
+local debug_count = 0
 
 local WIN_ROW = 25
 local TAB_STR = "  "
@@ -26,6 +27,10 @@ end
 
 local function ansi_clrscr()
 	print("\27[2J")
+end
+
+local function ansi_home()
+	print("\27[H")
 end
 
 local function ansi_clreol()
@@ -100,6 +105,7 @@ local function update_status_line()
 end
 
 local function update_line(i)
+	need_line_update = false
 	if (i + buf_start_row - 1) > #line then
 		ansi_printxy(i, 1, "")
 	else
@@ -110,7 +116,8 @@ local function update_line(i)
 end
 
 local function update_screen()
-	ansi_clrscr()
+	need_screen_update = false
+	ansi_home()
 	for i = 1, WIN_ROW do
 		update_line(i)
 	end
@@ -137,14 +144,14 @@ local function mv_cursor_up()
 	if cur_row >= 2 then
 		cur_row = cur_row - 1
 	end
-	need_screen_update = true
+	need_line_update = true
 end
 
 local function mv_cursor_down()
 	if cur_row < #line then
 		cur_row = cur_row + 1
 	end
-	need_screen_update = true
+	need_line_update = true
 end
 
 local function scroll_up()
@@ -241,7 +248,6 @@ local function handle_norm(key)
 		if cur_col > getlinelen() then
 			cur_col = getlinelen()
 		end
-		need_screen_update = true
 	elseif key == string.byte("x") then
 		setline(string.sub(getline(), 1, cur_col - 1) .. string.sub(getline(), cur_col + 1))
 		if cur_col > getlinelen() then
@@ -289,6 +295,7 @@ collectgarbage()
 key_msg = fn
 
 ansi_color(COL_WHITE)
+ansi_clrscr()
 update_screen()
 update_status_line()
 ansi_movexy(cur_row, cur_col)
@@ -309,11 +316,9 @@ while true do
 
 	if need_screen_update then
 		update_screen()
-		update_status_line()
 	end
 	if need_line_update then
 		update_line(cur_row)
-		update_status_line()
 	end
 	-- update_screen()
 	update_status_line()
