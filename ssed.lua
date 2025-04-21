@@ -28,6 +28,10 @@ local function ansi_clrscr()
 	print("\27[2J")
 end
 
+local function ansi_home()
+	print("\27[H")
+end
+
 local function ansi_clreol()
 	print("\27[K")
 end
@@ -110,7 +114,7 @@ local function update_line(i)
 end
 
 local function update_screen()
-	ansi_clrscr()
+	ansi_home()
 	for i = 1, WIN_ROW do
 		update_line(i)
 	end
@@ -289,6 +293,7 @@ collectgarbage()
 key_msg = fn
 
 ansi_color(COL_WHITE)
+ansi_clrscr()
 update_screen()
 update_status_line()
 ansi_movexy(cur_row, cur_col)
