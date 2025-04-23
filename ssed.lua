@@ -199,9 +199,11 @@ local function handle_insert(key)
 		table.insert(line, cur_row + buf_start_row, after_CR)
 		buf_start_row = buf_start_row + 1
 		cur_col = 1
+		need_screen_update = true
 	else
 		setline(string.sub(getline(), 0, cur_col - 1) .. string.char(key) .. string.sub(getline(), cur_col))
 		mv_cursor_right()
+		need_line_update = true
 	end
 end
 
